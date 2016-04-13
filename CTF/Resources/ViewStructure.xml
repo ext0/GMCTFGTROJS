@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<view>
+  <resource path="Home.html" location="CTF.View.Home.html" content-type="text/html" situational="homepage" lua="true"></resource>
+</view>
