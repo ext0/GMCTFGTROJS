@@ -1,76 +1,15 @@
-﻿<!DOCTYPE html>
+﻿<!doctype html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
-    <title></title>
+<html>
+<head lang="en">
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CTF</title>
 </head>
-<body id="body">
-    <script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
-    <canvas id="gameCanvas" width="800" height="800"></canvas>
-    <script>
-        var canvas = $("#gameCanvas")[0];
-        var ctx = canvas.getContext('2d');
-        var x = 50;
-        var y = 50;
-        function degToRad(degrees) {
-            var result = Math.PI/180 * degrees;
-            return result;
-        }
-        function canvasDraw() {
-            x += vx;
-            y += vy;
-            if(x > canvas.clientWidth+20) {
-                x = 0;
-            }
-
-            if(y > canvas.clientHeight+20) {
-                y = 0;
-            }
-
-            if(x < -20) {
-                x = canvas.clientWidth;
-            }
-
-            if(y < -20) {
-                y = canvas.clientHeight;
-            }
-
-            ctx.fillStyle = "black";
-            ctx.fillRect(0,0,canvas.clientWidth,canvas.clientHeight);
-            ctx.fillStyle = "#FF0000";
-
-            ctx.beginPath();
-            ctx.arc(x,y,40,0,degToRad(360), true);
-            ctx.fill();
-        }
-        canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-
-        document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-        canvas.onclick = function() {
-            canvas.requestPointerLock();
-        }
-        function restrictRange(x, y, n)
-        {
-            return Math.max(x,Math.min(y,n));
-        }
-        var vx = 0;
-        var vy = 0;
-        setInterval(function(){
-            canvasDraw();
-            vx = vx - (vx*.01);
-            vy = vy - (vy*.01);
-        }, 16); // 33 milliseconds = ~ 30 frames per sec
-        var maxSpeed = 50;
-        document.addEventListener("mousemove", function(e){
-            if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
-                vx = restrictRange(vx - 0.05, vx + 0.05, vx + e.movementX);
-                vy = restrictRange(vy - 0.05, vy + 0.05, vy + e.movementY);
-                vx = restrictRange(-maxSpeed, maxSpeed, vx);
-                vy = restrictRange(-maxSpeed, maxSpeed, vy);
-            }
-        }, false);
-    </script>
+<body>
+    <script src="gorescript-deps.min.js"></script>
+    <script src="gorescript.min.js"></script>
 </body>
 </html>

@@ -1,4 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <view>
   <resource path="Home.html" location="CTF.View.Home.html" content-type="text/html" situational="homepage" lua="true"></resource>
+  <resource path="gorescript-deps.min.js" location="CTF.View.Scripts.gorescript-deps.min.js" content-type="application/javascript"></resource>
+  <resource path="gorescript.min.js" location="CTF.View.Scripts.gorescript.min.js" content-type="application/javascript"></resource>
+  <resource path="main.js" location="CTF.View.Scripts.main.js" content-type="application/javascript"></resource>
+  <resource path="assets.zip" location="CTF.View.assets.zip" content-type="application/octet-stream"></resource>
 </view>
