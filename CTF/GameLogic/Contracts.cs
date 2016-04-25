@@ -19,12 +19,67 @@ namespace CTF.GameLogic
     }
     public class PlayerShot
     {
+        public Player player { get; set; }
         public Vector3 origin { get; set; }
         public Vector3 target { get; set; }
-        public PlayerShot(Vector3 origin, Vector3 target)
+        public PlayerShot(Player player, Vector3 origin, Vector3 target)
         {
+            this.player = player;
             this.origin = origin;
             this.target = target;
+        }
+    }
+    public class DamageEvent
+    {
+        public Player victim { get; set; }
+        public Player origin { get; set; }
+        public int damage { get; set; }
+        public DamageEvent(Player victim, Player origin, int damage)
+        {
+            this.victim = victim;
+            this.origin = origin;
+            this.damage = damage;
+        }
+    }
+    public class KillEvent
+    {
+        public Player victim { get; set; }
+        public Player killer { get; set; }
+        public KillEvent(Player victim, Player killer)
+        {
+            this.victim = victim;
+            this.killer = killer;
+        }
+    }
+    public class ServiceInstanceStorage
+    {
+        public DateTime lastUpdate { get; set; }
+        public CTFWebSocketService source { get; set; }
+        public List<DamageEvent> damageEvents { get; set; }
+        public ServiceInstanceStorage(CTFWebSocketService source)
+        {
+            this.source = source;
+            this.lastUpdate = DateTime.Now;
+            this.damageEvents = new List<DamageEvent>();
+        }
+        public void update()
+        {
+            lastUpdate = DateTime.Now;
+        }
+        public void addEvent(Player origin, int damage)
+        {
+            damageEvents.Add(new DamageEvent(source.me, origin, damage));
+        }
+        public Player getMostRecentKiller()
+        {
+            if (damageEvents.Count > 0)
+            {
+                return damageEvents[damageEvents.Count - 1].origin;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
     public class Player

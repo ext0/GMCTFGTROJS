@@ -33,13 +33,17 @@ namespace CTF.GameLogic
         {
             Send(new RequestMessage("POMOVE", player, true).serialize());
         }
-        public void UpdateDamage(int damage)
+        public void UpdateProjectile(Player player, Vector3 origin, Vector3 target)
         {
-            Send(new RequestMessage("PDAMAGE", damage, true).serialize());
+            Send(new RequestMessage("PSHOT", new PlayerShot(player, origin, target), true).serialize());
         }
-        public void UpdateProjectile(Vector3 origin, Vector3 target)
+        public void NotifyDisconnect(Player player)
         {
-            Send(new RequestMessage("PSHOT", new PlayerShot(origin, target), true).serialize());
+            Send(new RequestMessage("PLEAVE", player, true).serialize());
+        }
+        public void NotifyDied(Player killer, Player player)
+        {
+            Send(new RequestMessage("PDIED", new KillEvent(player, killer), true).serialize());
         }
         protected override void OnMessage(MessageEventArgs e)
         {
@@ -70,7 +74,7 @@ namespace CTF.GameLogic
                     };
 
                     this.me = player;
-                    UserStore.addPlayer(player);
+                    UserStore.addPlayer(this, player);
                     Send(new RequestMessage("PREQ", player, true).serialize());
                     return;
                 }
@@ -116,7 +120,7 @@ namespace CTF.GameLogic
                                     new Vector2(gridminx, gridminy),
                                     new Vector2(gridmaxx, gridmaxy),
                                     xangle);
-                UserStore.updatePosition(me);
+                UserStore.updatePosition(this);
             }
             else if (e.Data.StartsWith("PHIT"))
             {
@@ -126,21 +130,29 @@ namespace CTF.GameLogic
                     Send(new RequestMessage("PHIT", null, false).serialize());
                     return;
                 }
-                String target = data[1];
-                int damage = int.Parse(data[2]);
-                UserStore.updateDamage(this.me, target, damage);
+                int damage = int.Parse(data[1]);
+                String origin = data[2];
+                UserStore.updateDamage(this, origin, damage);
             }
             else if (e.Data.StartsWith("PSHOT"))
             {
                 String[] data = e.Data.Split(new String[] { " " }, StringSplitOptions.RemoveEmptyEntries);
-                if (data.Length != 4)
+                if (data.Length != 7)
                 {
-                    Send(new RequestMessage("PHIT", null, false).serialize());
+                    Send(new RequestMessage("PSHOT", null, false).serialize());
                     return;
                 }
                 double px = double.Parse(data[1]);
                 double py = double.Parse(data[2]);
                 double pz = double.Parse(data[3]);
+                double dx = double.Parse(data[4]);
+                double dy = double.Parse(data[5]);
+                double dz = double.Parse(data[6]);
+                UserStore.updateProjectile(this, new Vector3(px, py, pz), new Vector3(dx, dy, dz));
+            }
+            else if (e.Data.StartsWith("PDIED"))
+            {
+                UserStore.updateDied(this);
             }
         }
     }
